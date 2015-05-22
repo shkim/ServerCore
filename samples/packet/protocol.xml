@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><protocol version="1.0">
+  <config>
+    <title>Example Protocol for ServerCore packet sample</title>
+    <author>shkim</author>
+    <memo>Generates C++ Server and JavaScript Client code</memo>
+    <prefix builder_method="build_" c2s_id="IDC2S_" handler_method="on_" packet_struct="Pkt" s2c_id="IDS2C_" sender_method="send_"/>
+    <delegate_types b8="bool" f32="float" f64="double" i16="short" i32="int" i64="INT64" i8="char" u16="WORD" u32="DWORD" u64="UINT64" u8="BYTE"/>
+    <cpp capitalize="yes" common_file_name="TheProtocol">
+      <server class_name="TheUser">
+        <header>#include "TheUser.h"</header>
+      </server>
+      <client class_name="TheServer">
+        <header>#include "../samples.h"
+#include "netstream.h"
+#include "TheServer.h"</header>
+      </client>
+    </cpp>
+    <javascript>
+      <server class_name="TheUser"/>
+      <client class_name="TheServer"/>
+    </javascript>
+  </config>
+  <exports>
+    <entry encoding="UTF-8" language="cpp" newline="LF" output_dir="." role="server"/>
+    <entry encoding="UTF-8" language="javascript" newline="LF" output_dir="testcli" role="client"/>
+    <entry enabled="yes" encoding="UTF-8" language="javascript" newline="LF" output_dir="testcli" role="server"/>
+  </exports>
+  <constants>
+    <defines name="defines">
+      <field name="PROTOCOL_MAGIC" value="0x1234"/>
+      <field name="PROTOCOL_VERSION" value="1"/>
+    </defines>
+  </constants>
+  <stages>
+    <stage abbr="NoAuth" index="0" name="STAGE_NOAUTH"/>
+    <stage abbr="Authed" index="1" name="STAGE_AUTHED"/>
+  </stages>
+  <packets>
+    <group name="(default)">
+      <packet flow="c2s" name="Hello" stage="0">
+        <comment>Client should send this packet first</comment>
+        <field name="magic" type="int"/>
+        <field name="version" type="int"/>
+      </packet>
+      <packet flow="s2c" name="Welcome">
+        <comment>Hello packet accecpted</comment>
+        <field name="user_count" type="int">
+          <comment>Number of chat users</comment>
+        </field>
+      </packet>
+      <packet flow="s2c" name="NoWelcome">
+        <comment>version not accepted, server will disconnect</comment>
+        <field name="server_version" type="int"/>
+      </packet>
+      <packet flow="c2s" name="ReqNick" stage="1">
+        <field name="nick" type="StringTiny"/>
+      </packet>
+      <packet flow="s2c" name="SetNick">
+        <field name="nick" type="StringTiny"/>
+      </packet>
+      <packet flow="c2s" name="ReqChat" stage="1">
+        <field name="msg" type="String"/>
+      </packet>
+      <packet flow="s2c" name="Chat">
+        <field name="nick" type="StringTiny"/>
+        <field name="msg" type="StringTiny"/>
+      </packet>
+    </group>
+  </packets>
+</protocol>
