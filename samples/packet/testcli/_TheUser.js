@@ -53,7 +53,7 @@ function recv_ReqChat(self, buf, offset)
 {
 	var pkt = new Object();
 
-	var len_msg = buf.readUInt8(offset); offset += 1;
+	var len_msg = buf.readUInt16LE(offset); offset += 2;
 	if (len_msg > 0)
 	{
 		pkt.msg = buf.toString(undefined, offset, offset + len_msg);
